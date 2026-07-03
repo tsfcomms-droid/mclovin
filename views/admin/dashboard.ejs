@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - McLovin EU</title>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="admin-wrap">
+    <%- include('../partials/admin-nav', { active: 'links' }) %>
+
+    <% if (message) { %>
+      <div class="message"><%= message %></div>
+    <% } %>
+
+    <div class="admin-card">
+      <h3 style="margin-top:0;">Links</h3>
+      <% links.forEach(function(link, i) { %>
+        <div class="link-row <%= link.enabled ? '' : 'disabled' %>">
+          <div class="link-row-main">
+            <div class="label"><%= link.label %> <% if (!link.enabled) { %>(hidden)<% } %></div>
+            <div class="url"><%= link.url %></div>
+
+            <div class="edit-fields" id="edit-<%= link.id %>">
+              <form method="POST" action="/admin/links/<%= link.id %>/update">
+                <label>Label</label>
+                <input type="text" name="label" value="<%= link.label %>" required />
+
+                <label>URL</label>
+                <input type="url" name="url" value="<%= link.url %>" required />
+
+                <label>Icon</label>
+                <select name="icon" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--card-border); background:#16131c; color:var(--text); font-size:14px;">
+                  <% ['instagram','viber','signal','threema','link'].forEach(function(opt) { %>
+                    <option value="<%= opt %>" <%= link.icon === opt ? 'selected' : '' %>><%= opt %></option>
+                  <% }); %>
+                </select>
+
+                <div class="checkbox-row">
+                  <input type="checkbox" id="enabled-<%= link.id %>" name="enabled" <%= link.enabled ? 'checked' : '' %> />
+                  <label for="enabled-<%= link.id %>" style="margin:0;">Visible on site</label>
+                </div>
+
+                <button type="submit">Save</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="link-row-actions">
+            <form method="POST" action="/admin/links/<%= link.id %>/move">
+              <input type="hidden" name="direction" value="up" />
+              <button type="submit" class="secondary" <%= i === 0 ? 'disabled' : '' %>>&uarr;</button>
+            </form>
+            <form method="POST" action="/admin/links/<%= link.id %>/move">
+              <input type="hidden" name="direction" value="down" />
+              <button type="submit" class="secondary" <%= i === links.length - 1 ? 'disabled' : '' %>>&darr;</button>
+            </form>
+            <button type="button" class="secondary" onclick="toggleEdit('<%= link.id %>')">Edit</button>
+            <form method="POST" action="/admin/links/<%= link.id %>/delete" onsubmit="return confirm('Delete this link?');">
+              <button type="submit" class="danger">Delete</button>
+            </form>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+
+    <div class="admin-card">
+      <h3 style="margin-top:0;">Add a link</h3>
+      <form method="POST" action="/admin/links">
+        <label>Label</label>
+        <input type="text" name="label" placeholder="e.g. WhatsApp" required />
+
+        <label>URL</label>
+        <input type="url" name="url" placeholder="https://..." required />
+
+        <label>Icon</label>
+        <select name="icon" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--card-border); background:#16131c; color:var(--text); font-size:14px;">
+          <option value="link">link (generic)</option>
+          <option value="instagram">instagram</option>
+          <option value="viber">viber</option>
+          <option value="signal">signal</option>
+          <option value="threema">threema</option>
+        </select>
+
+        <button type="submit">Add link</button>
+      </form>
+    </div>
+
+    <div class="admin-card">
+      <h3 style="margin-top:0;">Showroom settings</h3>
+      <form method="POST" action="/admin/settings">
+        <label>Announcement banner text</label>
+        <input type="text" name="bannerText" value="<%= settings.bannerText %>" placeholder="e.g. 🚀 Fast shipping across EU" />
+
+        <div class="checkbox-row" style="margin-top:8px;">
+          <input type="checkbox" id="bannerEnabled" name="bannerEnabled" <%= settings.bannerEnabled ? 'checked' : '' %> />
+          <label for="bannerEnabled" style="margin:0;">Show banner on showroom</label>
+        </div>
+
+        <label style="margin-top:16px;">Order contact URL</label>
+        <input type="text" name="orderUrl" value="<%= settings.orderUrl %>" placeholder="https://wa.me/491234567890 or https://t.me/username" />
+        <p style="font-size:12px; color:var(--muted); margin:6px 0 0; line-height:1.5;">
+          WhatsApp: <code style="background:#16131c; padding:2px 5px; border-radius:4px;">https://wa.me/[number without +]</code><br/>
+          Telegram: <code style="background:#16131c; padding:2px 5px; border-radius:4px;">https://t.me/[username]</code><br/>
+          Pre-filled order messages work with WhatsApp links.
+        </p>
+
+        <button type="submit" style="margin-top:16px;">Save settings</button>
+      </form>
+    </div>
+
+    <div class="admin-card">
+      <h3 style="margin-top:0;">Change password</h3>
+      <form method="POST" action="/admin/password">
+        <label>Current password</label>
+        <input type="password" name="currentPassword" required />
+
+        <label>New password</label>
+        <input type="password" name="newPassword" minlength="8" required />
+
+        <label>Confirm new password</label>
+        <input type="password" name="confirmPassword" minlength="8" required />
+
+        <button type="submit">Update password</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function toggleEdit(id) {
+      document.getElementById('edit-' + id).classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

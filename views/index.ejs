@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>McLovin EU</title>
+  <meta name="description" content="McLovin EU - all official links" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="public-page">
+  <img class="decor decor-rainbow-top" src="/img/decor-rainbow.svg" alt="" />
+  <img class="decor decor-rainbow-bottom" src="/img/decor-rainbow.svg" alt="" />
+  <img class="decor decor-burst" src="/img/decor-burst.svg" alt="" />
+  <img class="decor decor-splat" src="/img/decor-splat.svg" alt="" />
+  <img class="decor-star" style="top: 14%; right: 8%;" src="/img/decor-star.svg" alt="" />
+  <img class="decor-star" style="bottom: 22%; left: 6%; width: 16px;" src="/img/decor-star.svg" alt="" />
+
+  <main class="page">
+    <div class="brand">
+      <% if (hasLogo) { %>
+        <img id="site-logo" src="/img/logo.jpg" alt="McLovin EU logo" class="logo-img" />
+      <% } else { %>
+        <div id="site-logo" class="logo-fallback">McLovin<span class="dot">.</span><span class="eu-badge">EU</span></div>
+      <% } %>
+    </div>
+
+    <p class="tagline">tap a link below &#9997;</p>
+
+    <a class="showroom-cta" href="/showroom">&#128229; Browse the Showroom</a>
+
+    <div class="section-divider"><span>follow &amp; contact</span></div>
+
+    <ul class="link-list">
+      <% links.forEach(function(link) { %>
+        <li>
+          <a class="link-card" href="<%= link.url %>" target="_blank" rel="noopener noreferrer">
+            <%- include('partials/icon', { icon: link.icon }) %>
+            <span class="link-label"><%= link.label %></span>
+          </a>
+        </li>
+      <% }); %>
+    </ul>
+
+    <footer class="footer">
+      <p class="powered-by">Powered by <a href="https://t.me/+AFuV4h1EB19jZWM8" target="_blank" rel="noopener noreferrer">Premium Labs</a></p>
+    </footer>
+  </main>
+
+  <script src="/js/logo-tap.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+<%
+const ICONS = {
+  instagram: '📸',
+  viber: '💬',
+  signal: '🔒',
+  threema: '🔐',
+  link: '🔗',
+};
+const iconKey = ICONS[icon] ? icon : 'link';
+%><span class="link-icon-badge icon-<%= iconKey %>" aria-hidden="true"><%= ICONS[iconKey] %></span>

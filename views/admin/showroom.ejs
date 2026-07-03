@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Showroom Admin - McLovin EU</title>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="admin-wrap">
+    <%- include('../partials/admin-nav', { active: 'showroom' }) %>
+
+    <% if (message) { %>
+      <div class="message"><%= message %></div>
+    <% } %>
+
+    <div class="admin-card">
+      <h3 style="margin-top:0;">Showroom items</h3>
+      <% if (items.length === 0) { %>
+        <p style="color: var(--muted); font-size: 14px;">No items yet. Add your first one below.</p>
+      <% } %>
+      <% items.forEach(function(item, i) {
+        var activeTiers = (item.gramTiers || []).filter(function(t) { return t.grams || t.price; });
+      %>
+        <div class="link-row <%= item.enabled ? '' : 'disabled' %>" style="align-items: flex-start;">
+          <div style="flex-shrink:0; display:flex; flex-direction:column; gap:4px;">
+            <% if (item.videoFilename) { %>
+              <video src="/videos/<%= item.videoFilename %>" style="width:90px; height:70px; object-fit:cover; border-radius:8px; background:#000;" muted></video>
+            <% } else if (item.imageFilename) { %>
+              <img src="/images/<%= item.imageFilename %>" style="width:90px; height:70px; object-fit:cover; border-radius:8px;" alt="" />
+            <% } else { %>
+              <div style="width:90px; height:70px; border-radius:8px; background:#16131c; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:11px;">no media</div>
+            <% } %>
+            <% if (!item.inStock) { %><span style="font-size:10px; color:#f0c88a; text-align:center; font-weight:700;">SOLD OUT</span><% } %>
+            <% if (item.featured) { %><span style="font-size:10px; color:#ffca3a; text-align:center; font-weight:700;">🔥 FEATURED</span><% } %>
+          </div>
+
+          <div class="link-row-main">
+            <div class="label">
+              <%= item.title %><% if (!item.enabled) { %> (hidden)<% } %>
+              <span class="admin-cat-badge cat-<%= item.category || 'weed' %>"><%= item.category === 'hash' ? 'Hash' : 'Weed' %></span>
+            </div>
+            <div class="url">
+              <% if (activeTiers.length > 0) { %>
+                <%= activeTiers.map(function(t) { return (t.grams || '?') + (t.price ? ' → ' + t.price + ' ' + item.currency : ''); }).join(' · ') %>
+              <% } else { %>no pricing set<% } %>
+            </div>
+
+            <div class="edit-fields" id="edit-<%= item.id %>">
+              <form method="POST" action="/admin/showroom/<%= item.id %>/update" enctype="multipart/form-data">
+                <label>Title</label>
+                <input type="text" name="title" value="<%= item.title %>" required />
+
+                <label>Category</label>
+                <select name="category" class="admin-select">
+                  <option value="weed" <%= (item.category !== 'hash') ? 'selected' : '' %>>Weed</option>
+                  <option value="hash" <%= (item.category === 'hash') ? 'selected' : '' %>>Hash</option>
+                </select>
+
+                <label>Pricing Tiers (up to 5 — leave blank to skip)</label>
+                <div class="gram-tiers-grid">
+                  <div class="gram-tier-labels">
+                    <span>Grams</span>
+                    <span>Price</span>
+                  </div>
+                  <% for (var t = 0; t < 5; t++) {
+                    var tier = (item.gramTiers && item.gramTiers[t]) ? item.gramTiers[t] : { grams: '', price: '' };
+                  %>
+                  <div class="gram-tier-row">
+                    <input type="text" name="grams" value="<%= tier.grams %>" placeholder="e.g. 3.5g" />
+                    <input type="text" name="price" value="<%= tier.price %>" placeholder="e.g. 60" />
+                  </div>
+                  <% } %>
+                </div>
+
+                <label>Currency</label>
+                <input type="text" name="currency" value="<%= item.currency %>" style="max-width:100px;" />
+
+                <label>Description</label>
+                <input type="text" name="description" value="<%= item.description || '' %>" placeholder="Optional details" />
+
+                <label>Replace video (mp4, mov, webm — max 300MB)</label>
+                <input type="file" name="video" accept="video/mp4,video/quicktime,video/webm" />
+
+                <label>Replace photo (jpg, png, webp)</label>
+                <input type="file" name="photo" accept="image/jpeg,image/png,image/webp" />
+
+                <div class="checkbox-row">
+                  <input type="checkbox" id="inStock-<%= item.id %>" name="inStock" <%= item.inStock !== false ? 'checked' : '' %> />
+                  <label for="inStock-<%= item.id %>" style="margin:0;">In stock</label>
+                </div>
+
+                <div class="checkbox-row">
+                  <input type="checkbox" id="featured-<%= item.id %>" name="featured" <%= item.featured ? 'checked' : '' %> />
+                  <label for="featured-<%= item.id %>" style="margin:0;">🔥 Featured (New drop)</label>
+                </div>
+
+                <div class="checkbox-row">
+                  <input type="checkbox" id="enabled-<%= item.id %>" name="enabled" <%= item.enabled ? 'checked' : '' %> />
+                  <label for="enabled-<%= item.id %>" style="margin:0;">Visible on site</label>
+                </div>
+
+                <button type="submit">Save</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="link-row-actions">
+            <form method="POST" action="/admin/showroom/<%= item.id %>/move">
+              <input type="hidden" name="direction" value="up" />
+              <button type="submit" class="secondary" <%= i === 0 ? 'disabled' : '' %>>&uarr;</button>
+            </form>
+            <form method="POST" action="/admin/showroom/<%= item.id %>/move">
+              <input type="hidden" name="direction" value="down" />
+              <button type="submit" class="secondary" <%= i === items.length - 1 ? 'disabled' : '' %>>&darr;</button>
+            </form>
+            <button type="button" class="secondary" onclick="toggleEdit('<%= item.id %>')">Edit</button>
+            <form method="POST" action="/admin/showroom/<%= item.id %>/delete" onsubmit="return confirm('Delete this item?');">
+              <button type="submit" class="danger">Delete</button>
+            </form>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+
+    <div class="admin-card">
+      <h3 style="margin-top:0;">Add a showroom item</h3>
+      <form method="POST" action="/admin/showroom" enctype="multipart/form-data">
+        <label>Title</label>
+        <input type="text" name="title" placeholder="e.g. OG Kush" required />
+
+        <label>Category</label>
+        <select name="category" class="admin-select">
+          <option value="weed">Weed</option>
+          <option value="hash">Hash</option>
+        </select>
+
+        <label>Pricing Tiers (up to 5 — leave blank to skip)</label>
+        <div class="gram-tiers-grid">
+          <div class="gram-tier-labels">
+            <span>Grams</span>
+            <span>Price</span>
+          </div>
+          <% for (var t = 0; t < 5; t++) { %>
+          <div class="gram-tier-row">
+            <input type="text" name="grams" placeholder="e.g. 3.5g" />
+            <input type="text" name="price" placeholder="e.g. 60" />
+          </div>
+          <% } %>
+        </div>
+
+        <label>Currency</label>
+        <input type="text" name="currency" value="EUR" style="max-width:100px;" />
+
+        <label>Description</label>
+        <input type="text" name="description" placeholder="Optional details (strain type, origin, etc.)" />
+
+        <label>Video (mp4, mov, webm — max 300MB)</label>
+        <input type="file" name="video" accept="video/mp4,video/quicktime,video/webm" />
+
+        <label>Photo (jpg, png, webp — shown if no video)</label>
+        <input type="file" name="photo" accept="image/jpeg,image/png,image/webp" />
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="add-inStock" name="inStock" checked />
+          <label for="add-inStock" style="margin:0;">In stock</label>
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="add-featured" name="featured" />
+          <label for="add-featured" style="margin:0;">🔥 Featured (New drop)</label>
+        </div>
+
+        <button type="submit">Add item</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function toggleEdit(id) {
+      document.getElementById('edit-' + id).classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

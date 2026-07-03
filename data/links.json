@@ -1,0 +1,42 @@
+[
+  {
+    "id": "insta",
+    "label": "Instagram",
+    "url": "https://www.instagram.com/mclovin.eu?igsh=MXAyMW0zbTZhZnJ3NA%3D%3D&utm_source=qr",
+    "icon": "instagram",
+    "enabled": true,
+    "order": 1
+  },
+  {
+    "id": "menu",
+    "label": "Menu",
+    "url": "https://invite.viber.com/?g2=AQBRhvDo3moGb1WgvwgTGuB1bO4q3LIaSkYltmAkrXuZkI938BOs1EWdC3Vd1qnx",
+    "icon": "viber",
+    "enabled": true,
+    "order": 2
+  },
+  {
+    "id": "showroom",
+    "label": "Showroom",
+    "url": "https://invite.viber.com/?g2=AQAyzuIYDTlCDVaxmmv8sNHZ%2BPXse0Mngd3pXtf60QYhqdE2GGqVNijUa0WrtQrC",
+    "icon": "viber",
+    "enabled": true,
+    "order": 3
+  },
+  {
+    "id": "signal",
+    "label": "Signal Contact",
+    "url": "https://signal.me/#eu/M1fja0mTieRYHhJLEVAqbKhm7f_sjoK95c72A1apkjbpUAt2nz9D0omlN9uT-IpS",
+    "icon": "signal",
+    "enabled": true,
+    "order": 4
+  },
+  {
+    "id": "threema",
+    "label": "Threema",
+    "url": "https://threema.id/69DZM6KS",
+    "icon": "threema",
+    "enabled": true,
+    "order": 5
+  }
+]

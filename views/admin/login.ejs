@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login - McLovin EU</title>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="admin-wrap" style="max-width: 380px; padding-top: 100px;">
+    <div class="admin-card">
+      <div class="admin-title">McLovin EU</div>
+      <p style="color: var(--muted); margin-top: 0;">Admin login</p>
+      <% if (error) { %>
+        <div class="message" style="background:#3a1f1f; border-color:#5c2f2f; color:#f0a6a6;"><%= error %></div>
+      <% } %>
+      <form method="POST" action="/admin/login">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required autofocus />
+        <div class="checkbox-row">
+          <input type="checkbox" id="remember" name="remember" />
+          <label for="remember" style="margin:0;">Remember me for 30 days</label>
+        </div>
+        <button type="submit">Log in</button>
+      </form>
+    </div>
+    <p style="text-align:center;"><a href="/" style="color: var(--muted); font-size: 13px;">&larr; back to site</a></p>
+  </div>
+</body>
+</html>

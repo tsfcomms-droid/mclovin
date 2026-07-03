@@ -1,0 +1,8 @@
+node_modules/
+.env
+data/admin.json
+data/INITIAL_ADMIN_PASSWORD.txt
+public/videos/*
+!public/videos/.gitkeep
+public/images/*
+!public/images/.gitkeep

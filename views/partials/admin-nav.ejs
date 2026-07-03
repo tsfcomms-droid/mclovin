@@ -1,0 +1,12 @@
+<div class="top-bar">
+  <div style="display:flex; align-items:center; gap:18px;">
+    <div class="admin-title" style="margin-bottom:0;">McLovin EU admin</div>
+    <nav style="display:flex; gap:6px;">
+      <a href="/admin" class="btn secondary" style="text-decoration:none; display:inline-block; margin-top:0; <%= active === 'links' ? 'outline: 2px solid var(--card-border);' : '' %>">Links</a>
+      <a href="/admin/showroom" class="btn secondary" style="text-decoration:none; display:inline-block; margin-top:0; <%= active === 'showroom' ? 'outline: 2px solid var(--card-border);' : '' %>">Showroom</a>
+    </nav>
+  </div>
+  <form method="POST" action="/admin/logout">
+    <button type="submit" class="secondary">Log out</button>
+  </form>
+</div>
